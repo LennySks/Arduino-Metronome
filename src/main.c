@@ -22,8 +22,8 @@
 #define signatureAmount 3
 #define second 1000
 
-uint16_t value;
-uint16_t bpm;
+uint16_t value = 0;
+uint16_t bpm = 0;
 uint16_t ticks = 9999;
 uint16_t beat = 0;
 uint16_t currenttick = 0;
@@ -43,8 +43,6 @@ typedef struct
 } SIGNATURE;
 
 SIGNATURE *signatures;
-
-// TODO: By reference
 
 void cycleSignature()
 {
@@ -133,17 +131,17 @@ void signatureLED(int currentBeat)
       break;
     }
   }
-  else{
-    
+  else
+  {
+    lightDownAllLeds();
   }
 }
 
-void play2Beats()
-
+void play2Beats(SIGNATURE *signature)
 {
   if (advancedMode)
   {
-    playTone(signatures[currentSignature].frequencies[beat], DURATION);
+    playTone(signature->frequencies[beat], DURATION);
     if (beat <= currentSignature)
     {
       beat++;
@@ -167,7 +165,7 @@ ISR(TIMER0_OVF_vect)
     currenttick++;
     if (currenttick >= ticks)
     {
-      play2Beats();
+      play2Beats(&signatures[currentSignature]);
       currenttick = 0;
     }
   }
@@ -280,10 +278,11 @@ int main(void)
   initTimer0();
 
   sei();
-
+  printf("%d \n", value);
   while (1)
   {
     value = ceil(readPotentiometer());
+
     if (!advancedMode)
     {
       writeNumber(value);
