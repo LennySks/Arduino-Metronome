@@ -158,6 +158,19 @@ void play2Beats(SIGNATURE *signature)
   signatureLED(beat);
 }
 
+void calculateTick()
+{
+  ticks = value / 16.384;
+}
+
+int getBPM()
+{
+  double msec = value / 1000.0;
+  double bpm = 60 / msec;
+
+  return ceil(bpm);
+}
+
 ISR(TIMER0_OVF_vect)
 {
   if (!paused)
@@ -201,10 +214,10 @@ void enableInterrupt()
 
 void createSignatures()
 {
-  // signatures[0].frequencies = malloc(1 * sizeof(Bb4));
-  signatures[0].frequencies = malloc(2 * sizeof(Bb4));
-  signatures[1].frequencies = malloc(3 * sizeof(Bb4));
-  signatures[2].frequencies = malloc(4 * sizeof(Bb4));
+  // signatures[0].frequencies = malloc(1 * sizeof(int));
+  signatures[0].frequencies = malloc(2 * sizeof(int));
+  signatures[1].frequencies = malloc(3 * sizeof(int));
+  signatures[2].frequencies = malloc(4 * sizeof(int));
 
   // signatures[0].sign = malloc(3);
   signatures[0].sign = malloc(3);
@@ -229,19 +242,6 @@ void createSignatures()
   signatures[0].sign = "2-4";
   signatures[1].sign = "3-4";
   signatures[2].sign = "4-4";
-}
-
-int getBPM()
-{
-  double msec = value / 1000.0;
-  double bpm = 60 / msec;
-
-  return ceil(bpm);
-}
-
-void calculateTick()
-{
-  ticks = value / 16.384;
 }
 
 void displayMetronome()
